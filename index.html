@@ -1,15 +1,170 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>점검표</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
-<meta name="theme-color" content="#5A6470">
-<style>html,body{height:100%;margin:0}body{background:#5A6470;color:#fff;font-family:system-ui,"Noto Sans KR",sans-serif;display:grid;place-items:center;text-align:center}
-a{display:inline-block;margin-top:18px;background:#fff;color:#5A6470;font-weight:800;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:17px}p{margin:6px 0;opacity:.85}</style></head>
-<body><div><div style="font-size:42px;font-weight:900">점검표</div><p>여는 중…</p><a id="go" href="https://claude.ai/artifact/VsvfnPT1Rj7fExuWF4Qh3p">점검표 열기</a></div>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>점검표</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#5A6470">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&family=Black+Han+Sans&display=swap">
+<style>/* icon 점검 */
+/* 한 줄씩 눌러 체크하는 점검표: 묶음별 진행 막대, 체크 상태는 이 폰에만 저장 */
+:root{
+  --bg:#EEF1EF; --surface:#FFFFFF; --ink:#17201D; --muted:#5C6964; --line:#D3DBD7;
+  --accent:#1D6B58; --accent-soft:#D6EAE3; --warn:#B3412F;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-disp:"Black Han Sans","IBM Plex Sans KR",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1412; --surface:#17201C; --ink:#E5ECE9; --muted:#93A19B; --line:#2A3631;
+  --accent:#5FC1A2; --accent-soft:#1D3A31; --warn:#E0745F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1412; --surface:#17201C; --ink:#E5ECE9; --muted:#93A19B; --line:#2A3631;
+  --accent:#5FC1A2; --accent-soft:#1D3A31; --warn:#E0745F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:0 40px}
+.wrap{max-width:720px;margin:0 auto}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:12px 10px;display:flex;align-items:center;gap:8px;z-index:5}
+h1{font-family:var(--f-disp);font-weight:400;font-size:20px;margin:0;flex:1;min-width:0}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;text-decoration:none;cursor:pointer}
+.btn:focus-visible,.it:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.total{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:14px;color:var(--muted)}
+.bar{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.hint{font-size:13px;color:var(--muted);margin:4px 0 14px}
+section{margin-bottom:18px}
+section h2{display:flex;align-items:baseline;gap:8px;font-size:16px;margin:0 0 6px}
+section h2 span{font-size:13px;color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+.it{width:100%;display:grid;grid-template-columns:24px 1fr;gap:4px 10px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px;color:var(--ink);font:inherit;cursor:pointer}
+.it .ck{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-weight:700;color:transparent;margin-top:1px}
+.it b{font-weight:600}
+.it small{grid-column:2;color:var(--muted);font-size:13px}
+.it.on{border-color:var(--accent);background:var(--accent-soft)}
+.it.on .ck{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.it.bad{border-color:var(--warn)}
+.it.bad .ck{border-color:var(--warn);color:var(--warn)}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.icons{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.icons h2{font-size:14px;margin:0 0 8px}
+.ichips{display:flex;flex-wrap:wrap;gap:6px}
+.ichips span{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px}
+.ichips b{display:inline-grid;place-items:center;min-width:34px;height:24px;border-radius:7px;background:var(--accent-soft);color:var(--ink);font-size:12px}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>기록장 기능 점검표</h1>
+    <a class="btn" href="https://claude.ai/artifact/RPCrfxU7tcwF7YjrMvUFNv" target="_blank" rel="noopener">앱 열기</a>
+    <button class="btn" id="reset" type="button">처음부터</button>
+    <button class="btn" id="fs" type="button" aria-label="전체화면">⛶</button>
+  </header>
+  <div class="total"><span id="tn">0 / 0</span><div class="bar"><i id="tb"></i></div></div>
+  <p class="hint">앱에서 직접 해 보고, 되면 한 번 눌러 ✓, 안 되면 한 번 더 눌러 ✕. 안 된 것은 사진과 함께 알려 주세요.</p>
+  <section class="icons" aria-label="앱 아이콘 규칙">
+    <h2>앱 아이콘 · 한글 두 글자 (새 앱도 겹치지 않게)</h2>
+    <div class="ichips">
+      <span><b>기록</b>4분기 기록장</span><span><b>점검</b>기능 점검표</span><span><b>영어</b>한영 문장 리더</span>
+      <span><b>미드</b>미드 한 장면</span><span><b>루틴</b>데일리 퀘스트</span><span><b>할일</b>할일 알리미</span>
+      <span><b>선언</b>나의 선언문</span><span><b>사진</b>태그 카메라</span><span><b>운동</b>운동 영상 정리</span>
+    </div>
+  </section>
+  <div id="list"></div>
+</div>
+
 <script>
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-var U="https://claude.ai/artifact/VsvfnPT1Rj7fExuWF4Qh3p";
-// 홈 화면 아이콘으로 실행했을 때만 바로 이동(설치 전에는 버튼 → 크롬 설치 안내가 뜨게)
-var standalone=matchMedia('(display-mode: standalone)').matches;
-if(standalone){location.replace(U);}
-window.addEventListener('pageshow',function(e){if(e.persisted&&standalone)location.replace(U);});
-</script></body></html>
+const GROUPS = [
+  ['하루 화면', [
+    ['주제 버튼이 두 글자', '운동·식사·수면·체중·영어·일어·집청·업무…'],
+    ['상태 줄: 안 한 것이 앞, 한 것이 뒤', '수면→체중→알약→운동→식사→영어→일어→업무→피부 순서'],
+    ['상태 줄 항목을 누르면 그 주제 새 기록 창', '예: "알약 없음" 누르기'],
+    ['오늘 기본값 4개가 들어가 있음', '수면·체중·영어·일어 카드에 "기본값" 표시'],
+    ['기록 시각이 30분 단위로 보임', '예: 10:53~11:04 → 11:00~11:30'],
+    ['맨 위 알림을 ✕로 닫을 수 있음', '영상 대기·사진 분류 알림'],
+    ['다크모드에서 주황 경고 글자가 읽힘', '폰 다크모드로 바꿔서 확인'],
+  ]],
+  ['새 기록', [
+    ['처음 시각이 30분 단위', '13:17에 열면 13:30'],
+    ['시작 − / +가 30분씩', ':00·:30에 맞춰짐'],
+    ['지속시간 − / + → "→ 종료 15:30" 표시', '종료 입력칸 없음'],
+    ['영어·일어 새 기록 기본 30분, 운동 1시간', ''],
+    ['수면은 어젯밤 시간이 미리 들어감', ''],
+    ['끼니 7개 버튼', '아침·아침간식·점심·점심간식·저녁·저녁간식·야식'],
+    ['공복체중 칸에 직전 값', '저장 뒤 상태 줄 "체중 ○○kg"'],
+    ['기본값 카드를 고쳐 저장하면 "기본값" 표시가 사라짐', ''],
+    ['가로로 긴 캡처 썸네일이 2칸 너비로 크게', '글자가 대충 읽히는지'],
+  ]],
+  ['바로 찍기 (사진 위 표시)', [
+    ['날짜가 "10/7(수) 15:30" 한 줄, 사진 아래쪽', ''],
+    ['메모 입력칸이 사진 바로 아래', '말로 메모 버튼 없음'],
+    ['글씨체 2개(굵은 글씨·손글씨)', ''],
+    ['장소·글씨체를 다음에도 기억', '두 번 찍어 보기'],
+    ['폴드 펼친 화면: 양옆에 메뉴, 스크롤 없음', ''],
+  ]],
+  ['사진·영상 올리기', [
+    ['고른 뒤 날짜별 묶음 + "오늘/어제/N일 전"', '오늘 아닌 날짜는 빨강'],
+    ['카드에 찍은 시각·카메라/화면 캡처 표시', ''],
+    ['어두운 영상은 선택이 빠져 있고 알림', '다시 고르면 경고 한 번 더'],
+    ['사진을 올리면 "📝 캡처 메모는 오후 N시쯤" 안내', ''],
+    ['영상 진행 막대 %와 남은 시간', '100% "나가도 됩니다"'],
+    ['중간에 나갔다 다시 열면 [다시 넣기] 알림', ''],
+    ['맨 위 "영상 판별 대기 · 오후 N시쯤 예정"', ''],
+    ['판별 뒤 요약 이미지에 자세 띠(✓ / ⚠)', '정각 지나고 앱 열기'],
+  ]],
+  ['종목', [
+    ['부위 → 종목 누르면 무게·횟수 자동', '고쳐서 "+ 1세트 기록"'],
+    ['묶음(가슴날 등) 한 번에 넣기, ✎ 수정', ''],
+    ['길게 눌러 버튼 삭제', ''],
+    ['나중에 몰아 넣은 종목 시각이 "~17:25"처럼 운동 시간대 안', ''],
+    ['⏱ 타이머 → 끝나면 운동 기록 저장', ''],
+  ]],
+  ['검색 · PDF · 주제 관리', [
+    ['🔍 "promis" → 오늘 영어 기록', '찾은 글자 노란 표시'],
+    ['검색에서 주제 칩으로 거르기', '예: 업무만'],
+    ['PDF 주제 칩이 두 글자', ''],
+    ['PDF 날짜마다 수면→체중→운동→식사 순서', '수면·체중·운동·식단 함께 선택'],
+    ['주제 관리 → 수면 기본 시각 저장', ''],
+  ]],
+  ['Claude 자동 작업', [
+    ['매시 정각에 잘못 올린 사진이 옮겨짐 + 알림', '예: 운동 → 식단'],
+    ['캡처 사진 메모 아래 📝 글자 메모', '영어 자막·단축키 등'],
+    ['폰 알림(푸시) 켜기', 'Claude 앱 → 예약 작업 → 기록장 매시간 점검 → 알림'],
+    ['하루 리포트에 공복체중·끼니 7개', '다음 리포트(7:48 등) 확인'],
+    ['식단 사진을 올리면 다음 정각에 Claude 분석', '하루 리포트를 기다리지 않음'],
+  ]],
+  ['10/8 새 기능', [
+    ['기록 열기 → 합치기 칸에 같은 날·같은 주제 기록', '두 번 누르고 저장 → 하나로'],
+    ['+ 기록 → 카메라로 찍기 → "📷 한 장 더"로 연달아', '사진마다 "누르면 표시"'],
+    ['표시 차례로 넣기 → 한 장씩 표시 창', '취소하면 거기서 멈춤'],
+    ['바로 찍기 → 저장 → "한 장 더"로 바로 다음 사진', '카메라가 다시 열리는지'],
+    ['태그캠: 날짜 한 줄 10/8(목) 14:40 · 메모 칸 사진 밑', '폴드에서 3단'],
+    ['한영리더: [구간] 두 번 → 그 구간만 반복', '길게 누르면 앞·뒤 3문장 반복'],
+    ['선언문: 맨 위 영어 제목 · 오늘·D+N·D-N 칩', '사진 왼쪽 작게'],
+    ['앱 목록 아이콘이 한글 두 글자', '기록·점검·영어·루틴·할일·미드·선언·사진·운동'],
+    ['같은 시간·같은 주제로 새로 저장 → 기존 기록에 붙음', '"13:00 출퇴 기록에 합쳤어요" 알림'],
+    ['주제 버튼 아래 🍳 아침 루틴 · 올리브유 달걀', '누르면 바로 기록 · 약 420kcal'],
+    ['바로 찍기 저장 뒤 📷 한 장 더', '카메라 다시 열림'],
+  ]],
+];
+const KEY = 'kirok.check.v1';
+let st = {};
+try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+const saveSt = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function paint() {
+  let all = 0, ok = 0;
+  document.getElementById('list').innerHTML = GROUPS.map(([g, items], gi) => {
+    const n = items.filter((_, i) => st[gi + '-' + i] === 1).length; all += items.length; ok += n;
+    return `<section><h2>${esc(g)} <span>${n}/${items.length}</span></h2>${items.map(([t, d], i) => {
+      const k = gi + '-' + i, v = st[k];
+      return `<button type="button" class="it ${v === 1 ? 'on' : v === 2 ? 'bad' : ''}" data-k="${k}" aria-pressed="${v === 1}"><span class="ck">${v === 2 ? '✕' : '✓'}</span><b>${esc(t)}</b>${d ? `<small>${esc(d)}</small>` : ''}</button>`;
+    }).join('')}</section>`;
+  }).join('');
+  document.getElementById('tn').textContent = `${ok} / ${all} 확인`;
+  document.getElementById('tb').style.width = (all ? ok / all * 100 : 0) + '%';
+  document.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { const k = b.dataset.k; st[k] = st[k] === 1 ? 2 : st[k] === 2 ? 0 : 1; saveSt(); paint(); });
+}
+document.getElementById('reset').onclick = e => {
+  const b = e.currentTarget;
+  if (b.dataset.arm) { st = {}; saveSt(); paint(); b.textContent = '처음부터'; delete b.dataset.arm; return; }
+  b.dataset.arm = '1'; b.textContent = '한 번 더 누르면 지움'; setTimeout(() => { if (b.dataset.arm) { delete b.dataset.arm; b.textContent = '처음부터'; } }, 3000);
+};
+document.getElementById('fs').onclick = () => { try { const el = document.documentElement; if (document.fullscreenElement) document.exitFullscreen(); else (el.requestFullscreen || el.webkitRequestFullscreen).call(el).catch(() => {}); } catch (e) {} };
+paint();
+</script>
+
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</body></html>
